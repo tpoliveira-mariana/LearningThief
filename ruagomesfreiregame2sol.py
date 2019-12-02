@@ -17,8 +17,9 @@ class LearningAgent:
                 self.alpha = 0.1
                 self.gamma = 0.9
 
-                self.explored = [[0 for i in range(nS)] for i in range(nS)]
-                self.Q = [[-math.inf for i in range(nA)] for i in range(nS)] 
+                self.explored = [[0 for i in range(nA)] for i in range(nS)]
+                self.neighbours = [0 for i in range(nS)]
+                self.Q = [[0 for i in range(nA)] for i in range(nS)] 
                 # define this function
               
         
@@ -31,18 +32,13 @@ class LearningAgent:
         def selectactiontolearn(self,st,aa):
                 # define this function
                 #print("select one action to learn better")
-                min_freq = math.inf
-                min_i = math.inf
-                explored = math.inf
-                for i, aux in enumerate(aa):
-                        if self.explored[st][aux] < min_freq:
-                                min_freq = self.explored[st][aux]
-                                min_i = i
-                                explored = aux
+                print(aa)
+                print(self.explored[st])
+                n_neighbours = len(aa)
+                a = self.explored[st].index(min(self.explored[st][:n_neighbours]))
 
-                a = min_i
-
-                self.explored[st][explored] += 1
+                self.explored[st][a] += 1
+                self.neighbours[st] = n_neighbours
 
                 # define this function
                 return a
@@ -71,7 +67,7 @@ class LearningAgent:
         def learn(self,st,nst,a,r):
                 # define this function
                 #print("learn something from this data")
-                bestB = max(self.Q[nst])
+                bestB = max(self.Q[nst][:self.neighbours[st]])
                 thisQ = self.Q[st][a]
                 self.Q[st][a] = thisQ + self.alpha * (r + self.gamma * bestB - thisQ) 
                 return
