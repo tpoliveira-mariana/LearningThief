@@ -14,11 +14,16 @@ class LearningAgent:
                 # define this function
                 self.nS = nS
                 self.nA = nA
-                self.alpha = 0.1
-                self.gamma = 0.9
+                self.alpha = 0.75
+                self.gamma = 0.5
 
+                # counter for each time a stated has been explored
                 self.explored = [[0 for i in range(nA)] for i in range(nS)]
-                self.neighbours = [0 for i in range(nS)]
+
+                # number of neighbours each state has
+                self.neighbours = [nA for i in range(nS)]
+
+                # matrix with the Q values
                 self.Q = [[0 for i in range(nA)] for i in range(nS)] 
                 # define this function
               
@@ -32,8 +37,7 @@ class LearningAgent:
         def selectactiontolearn(self,st,aa):
                 # define this function
                 #print("select one action to learn better")
-                print(aa)
-                print(self.explored[st])
+
                 n_neighbours = len(aa)
                 a = self.explored[st].index(min(self.explored[st][:n_neighbours]))
 
@@ -51,10 +55,7 @@ class LearningAgent:
         # a - the index to the action in aa
         def selectactiontoexecute(self,st,aa):
                 # define this function
-                a = 0
-                for i, a_aux in enumerate(aa):
-                        if self.Q[st][i] > self.Q[st][a]:
-                                a = i
+                a = self.Q[st].index(max(self.Q[st][:self.neighbours[st]]))
                 # print("select one action to see if I learned")
                 return a
 
@@ -67,7 +68,7 @@ class LearningAgent:
         def learn(self,st,nst,a,r):
                 # define this function
                 #print("learn something from this data")
-                bestB = max(self.Q[nst][:self.neighbours[st]])
+                bestB = max(self.Q[nst][:self.neighbours[nst]]) 
                 thisQ = self.Q[st][a]
                 self.Q[st][a] = thisQ + self.alpha * (r + self.gamma * bestB - thisQ) 
                 return
